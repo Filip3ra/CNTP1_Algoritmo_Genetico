@@ -3,14 +3,17 @@ import random
 
 ''' ATUALIZAÇÕES
 
-    1) Os pais devem ser calculados com o fitness, que é a função sinal_saida(). 
-    Então a função deve ser chamada logo aqui no começo.
+[OK] 1) Os pais devem ser calculados com o fitness, que é a função sinal_saida(). 
+     Então a função deve ser chamada logo aqui no começo.
 
-    2) A mutação de 0,03 é basicamente 3%, ou seja, num sorteiro aleatório entre
-    1 e 100, se sair os números 1, 2 ou 3 a mutação ocorre. Feito isso para cada 
-    indivíduo basta selecionar um bit dele e alterar.
+[]   2) A mutação de 0,03 é basicamente 3%, ou seja, num sorteiro aleatório entre
+     1 e 100, se sair os números 1, 2 ou 3 a mutação ocorre. Feito isso para cada 
+     indivíduo basta selecionar um bit dele e alterar.
 
-    3) 
+[]   3) Organizar o trabalho em funções
+
+[]   4) 
+
 '''
 
 
@@ -43,6 +46,44 @@ def int_pra_bin(vet_int):
     return vet_char_bin
 
 
+# Função que realiza o torneio binário, retornando um vetor com as posições
+# na matriz de individuos referente aos vencedores do torneio.
+def torneio_binario():
+    # declaro uma lista vazia para guardar os vencedores do torneio
+    ganhadores = []
+
+    # realizo o torneio 30 vezes para manter 30 indivíduos
+    for a in range(30):
+
+        # escolho dois individuos de forma aleatória
+        p1 = p2 = 0
+        while p1 == p2:
+            p1 = random.randint(0, 29)
+            p2 = random.randint(0, 29)
+
+        # faço um torneio binário entre p1 e p2
+        fitness_p1 = sinal_saida(int_pra_bin(individuos[p1]))
+        fitness_p2 = sinal_saida(int_pra_bin(individuos[p2]))
+
+        # quem for maior passa no torneio
+        if fitness_p1 > fitness_p2:
+            print("P1 passa = ", fitness_p1)
+            ganhadores.append(p1)
+        elif fitness_p1 < fitness_p2:
+            print("P2 passa = ", fitness_p2)
+            ganhadores.append(p2)
+        elif fitness_p1 == fitness_p2:  # se derem iguais, escolho algum de forma aleatória
+            aux = random.randint(1, 2)
+            if aux == 1:
+                print("> P1 passa = ", fitness_p1)
+                ganhadores.append(p1)
+            else:
+                print("> P2 passa = ", fitness_p2)
+                ganhadores.append(p2)
+    return ganhadores
+#----------------------------------------------------------------------------------------------------------------------
+
+
 # matriz com 30 individuos com 9 elementos, preenchida com 0
 individuos = np.zeros((30, 9), dtype=int)
 
@@ -54,78 +95,46 @@ for i in range(len(individuos)):
         print(individuos[i][j], " ", end="")
     print()
 
+# realizo o torneio binário e tenho um vetor com as posições dos vencedores la da matriz de individuos
+vencedores = torneio_binario()
 
-# declaro uma lista vazia para guardar os vencedores do torneio
-vencedores = []
+def cruzamento(vetor_vencedores):
 
-# realizo o torneio entre 10 pares de indivíduos
-for a in range(30):
 
-    # escolho dois individuos de forma aleatória
-    p1 = p2 = 0
-    while p1 == p2:
-        p1 = random.randint(0, 29)
-        p2 = random.randint(0, 29)
+    # seleciona aleatoriamente dois pares de vencedores para serem cruzados
+    v1 = v2 = 0
+    while v1 == v2:
+        v1 = random.randint(0, 29)
+        v2 = random.randint(0, 29)
 
-    # faço um torneio binário entre p1 e p2
-    soma_p1 = soma_p2 = 0
+    pai_1 = vetor_vencedores[v1]
+    pai_2 = vetor_vencedores[v2]
 
-    for k in range(len(individuos[p1])):
-        soma_p1 = soma_p1 + individuos[p1][k]  # soma de p1
+    print("pai 1 = ", individuos[pai_1])
+    print("pai 2 = ", individuos[pai_2])
 
-    for k in range(len(individuos[p2])):
-        soma_p2 = soma_p2 + individuos[p2][k]  # soma de p2
+    # ponto de corte
+    corte = random.randint(1, 8)
+    print("Corte = ", corte)
 
-    # quem for maior passa no torneio
-    if soma_p1 > soma_p2:
-        print("P1 passa = ", soma_p1)
-        vencedores.append(p1)
-    elif soma_p1 < soma_p2:
-        print("P2 passa = ", soma_p2)
-        vencedores.append(p2)
-    elif soma_p1 == soma_p2:  # se derem iguais, escolho algum de forma aleatória
-        aux = random.randint(1, 2)
-        if aux == 1:
-            print("> P1 passa = ", soma_p1)
-            vencedores.append(p1)
-        else:
-            print("> P2 passa = ", soma_p2)
-            vencedores.append(p2)
+    # declaro dois filhos gerados no cruzamento
+    filho_1 = []
+    filho_2 = []
 
-print(vencedores)
+    # percorro a primeira parte
+    for k in range(corte):
+        filho_1.append(individuos[pai_1][k])
+        filho_2.append(individuos[pai_2][k])
 
-# seleciona aleatoriamente dois pares de vencedores para serem cruzados
-v1 = v2 = 0
-while v1 == v2:
-    v1 = random.randint(0, 29)
-    v2 = random.randint(0, 29)
+    # percorro a segunda parte
+    for p in range(corte, len(individuos[pai_1])):
+        filho_1.append(individuos[pai_2][p])
+        filho_2.append(individuos[pai_1][p])
 
-print("pai 1 = ", individuos[vencedores[v1]])
-print("pai 2 = ", individuos[vencedores[v2]])
-
-# ponto de corte
-corte = random.randint(1, 8)
-print("Corte = ", corte)
-
-# declaro dois filhos gerados no cruzamento
-filho_1 = []
-filho_2 = []
-
-# percorro a primeira parte
-for k in range(corte):
-    filho_1.append(individuos[vencedores[v1]][k])
-    filho_2.append(individuos[vencedores[v2]][k])
-
-# percorro a segunda parte
-for p in range(corte, len(individuos[vencedores[v1]])):
-    filho_1.append(individuos[vencedores[v2]][p])
-    filho_2.append(individuos[vencedores[v1]][p])
-
-# tenho dois filhos de um cruzamento
-print(filho_1)
-print(filho_2)
+    # tenho dois filhos de um cruzamento
+    print(filho_1)
+    print(filho_2)
 # -------------------------------------------------
-
 
 
 # representação binária dos filhos e pais
