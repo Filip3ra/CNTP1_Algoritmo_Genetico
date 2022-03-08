@@ -1,20 +1,8 @@
 import numpy as np
 import random
 
-''' ATUALIZAÇÕES
-
-[OK] 1) Os pais devem ser calculados com o fitness, que é a função sinal_saida(). 
-     Então a função deve ser chamada logo aqui no começo.
-
-[]   2) A mutação de 0,03 é basicamente 3%, ou seja, num sorteiro aleatório entre
-     1 e 100, se sair os números 1, 2 ou 3 a mutação ocorre. Feito isso para cada 
-     indivíduo basta selecionar um bit dele e alterar.
-
-[]   3) Organizar o trabalho em funções
-
-[]   4) 
-
-'''
+# guarda a posição do melhor pai da geração atual
+melhor_pai = [0, 0]
 
 
 # função fitness, que transforma os valores binários em um valor inteiro
@@ -67,21 +55,92 @@ def torneio_binario():
 
         # quem for maior passa no torneio
         if fitness_p1 > fitness_p2:
-            print("P1 passa = ", fitness_p1)
+            #print("P1 passa = ", fitness_p1)
             ganhadores.append(p1)
+
+            # verifico quem é o melhor pai
+            if fitness_p1 > melhor_pai[1]:
+                melhor_pai[0] = p1
+                melhor_pai[1] = fitness_p1
         elif fitness_p1 < fitness_p2:
-            print("P2 passa = ", fitness_p2)
+            #print("P2 passa = ", fitness_p2)
             ganhadores.append(p2)
+
+            if fitness_p2 > melhor_pai[1]:
+                melhor_pai[0] = p2
+                melhor_pai[1] = fitness_p2
         elif fitness_p1 == fitness_p2:  # se derem iguais, escolho algum de forma aleatória
             aux = random.randint(1, 2)
             if aux == 1:
-                print("> P1 passa = ", fitness_p1)
+                #print("> P1 passa = ", fitness_p1)
                 ganhadores.append(p1)
             else:
-                print("> P2 passa = ", fitness_p2)
+                #print("> P2 passa = ", fitness_p2)
                 ganhadores.append(p2)
+            # se os fitness são iguais então basta pegar qualquer um
+            melhor_pai[0] = p1
+            melhor_pai[1] = fitness_p1
+
     return ganhadores
-#----------------------------------------------------------------------------------------------------------------------
+
+
+def cruzamento():
+    # rodo o cruzamento 15 vezes, pois cada par me gera 2 filhos
+    for x in range(0, 30, 2):  # iteração começa em 0, vai até 30 e incrementa em 2
+        # seleciona aleatoriamente dois pares de vencedores para serem cruzados
+        v1 = v2 = 0
+        while v1 == v2:
+            v1 = random.randint(0, 29)
+            v2 = random.randint(0, 29)
+
+        pai_1 = vencedores[v1]
+        pai_2 = vencedores[v2]
+
+        #print("pai 1 = ", individuos[pai_1])
+        #print("pai 2 = ", individuos[pai_2])
+
+        # ponto de corte
+        corte = random.randint(1, 8)
+        #print("Corte = ", corte)
+
+        # declaro dois filhos gerados no cruzamento
+        filho_1 = []
+        filho_2 = []
+
+        # percorro a primeira parte
+        for k in range(corte):
+            filho_1.append(individuos[pai_1][k])
+            filho_2.append(individuos[pai_2][k])
+
+        # percorro a segunda parte
+        for p in range(corte, len(individuos[pai_1])):
+            filho_1.append(individuos[pai_2][p])
+            filho_2.append(individuos[pai_1][p])
+
+        # tenho dois filhos de um cruzamento
+        filhos_cruzamento[x] = filho_1
+        filhos_cruzamento[x + 1] = filho_2
+
+
+def get_pior_filho():
+    pior_filho = [100, 100]
+    for x in range(30):
+        pf = sinal_saida(int_pra_bin(filhos_cruzamento[x]))
+        if pf < pior_filho[1]:
+            pior_filho[1] = pf
+            pior_filho[0] = x
+    return pior_filho
+
+
+def get_melhor_filho():
+    melhor_filho = [0, 0]
+    for x in range(30):
+        pf = sinal_saida(int_pra_bin(filhos_cruzamento[x]))
+        if pf > melhor_filho[1]:
+            melhor_filho[1] = pf
+            melhor_filho[0] = x
+    return melhor_filho
+# ----------------------------------------------------------------------------------------------------------------------
 
 
 # matriz com 30 individuos com 9 elementos, preenchida com 0
@@ -95,50 +154,32 @@ for i in range(len(individuos)):
         print(individuos[i][j], " ", end="")
     print()
 
-# realizo o torneio binário e tenho um vetor com as posições dos vencedores la da matriz de individuos
-vencedores = torneio_binario()
+for i in range(40):
+    # realizo o torneio binário e tenho um vetor com as posições dos vencedores la da matriz de individuos
+    vencedores = torneio_binario()
 
-def cruzamento(vetor_vencedores):
+    # matriz que irá guardar todos os filhos dos cruzamentos
+    filhos_cruzamento = np.zeros((30, 9), dtype=int)
 
+    # chama função para realizar os cruzamentos
+    cruzamento()
 
-    # seleciona aleatoriamente dois pares de vencedores para serem cruzados
-    v1 = v2 = 0
-    while v1 == v2:
-        v1 = random.randint(0, 29)
-        v2 = random.randint(0, 29)
+    # obtenho o melhor pai e substituo pelo pior filho
+    filho_ruim = get_pior_filho()
+    filhos_cruzamento[filho_ruim[0]] = individuos[melhor_pai[0]]
 
-    pai_1 = vetor_vencedores[v1]
-    pai_2 = vetor_vencedores[v2]
+    individuos = filhos_cruzamento
 
-    print("pai 1 = ", individuos[pai_1])
-    print("pai 2 = ", individuos[pai_2])
+print(get_melhor_filho())
 
-    # ponto de corte
-    corte = random.randint(1, 8)
-    print("Corte = ", corte)
-
-    # declaro dois filhos gerados no cruzamento
-    filho_1 = []
-    filho_2 = []
-
-    # percorro a primeira parte
-    for k in range(corte):
-        filho_1.append(individuos[pai_1][k])
-        filho_2.append(individuos[pai_2][k])
-
-    # percorro a segunda parte
-    for p in range(corte, len(individuos[pai_1])):
-        filho_1.append(individuos[pai_2][p])
-        filho_2.append(individuos[pai_1][p])
-
-    # tenho dois filhos de um cruzamento
-    print(filho_1)
-    print(filho_2)
 # -------------------------------------------------
 
 
 # representação binária dos filhos e pais
 
+
+'''
+teste = '0111111111111111111111111111111111111'
 
 print(sinal_saida(int_pra_bin(filho_1)))
 print(sinal_saida(int_pra_bin(filho_2)))
@@ -148,9 +189,5 @@ print(individuos[vencedores[v2]])
 
 print(sinal_saida(int_pra_bin(individuos[vencedores[v1]])))
 print(sinal_saida(int_pra_bin(individuos[vencedores[v2]])))
-
-'''
-teste = '0111111111111111111111111111111111111'
-
 
 '''
