@@ -20,6 +20,7 @@ import random
 
 # guarda a posição do melhor pai da geração atual
 melhor_pai = [0, 0]
+filhos_cruzamento_b = ''
 
 
 # Função que vai preencher a matriz de indivíduos com valores aleatórios
@@ -150,6 +151,52 @@ def cruzamento():
         filhos_cruzamento[x + 1] = filho_2
 
 
+def converte_pra_bin():
+    filhos_cruzamento_bin = ''
+    for x in range(len(filhos_cruzamento)):
+        filhos_cruzamento_bin = int_pra_bin(filhos_cruzamento[x])
+
+    return filhos_cruzamento_bin
+
+
+def mutacao():
+    filhos_cruzamento_b = converte_pra_bin()
+    filho_mutado = random.randint(0, 29)
+    posicao_bit = random.randint(0, 35)
+
+    bit = filhos_cruzamento_b[filho_mutado][posicao_bit]
+
+    if bit == '1':
+        filhos_cruzamento[filho_mutado][posicao_bit] = '0'
+        print("Mutei")
+    else:
+        filhos_cruzamento[filho_mutado][posicao_bit] = '1'
+        print("Mutei")
+
+
+# devo comprara as taxas de 0.03, 0.05, 0.1 e 0.4
+# que correspondem a 3%, 5%, 10% e 40%
+def taxa_mutacao(porcentagem):
+    valor = random.randint(1, 100)
+    mut = False
+
+    if porcentagem == 3:
+        if 0 < valor <= 3:
+            mut = True
+    elif porcentagem == 5:
+        if 0 < valor <= 5:
+            mut = True
+    elif porcentagem == 10:
+        if 0 < valor <= 10:
+            mut = True
+    elif porcentagem == 40:
+        if 0 < valor <= 40:
+            mut = True
+    else:
+        mut = False
+    return mut
+
+
 def get_pior_filho():
     pior_filho = [100, 100]
     for x in range(30):
@@ -173,6 +220,7 @@ def get_melhor_filho():
 # ----------------------------------------------------------------------------------------------------------------------
 b = [0, 0]
 melhor = 0
+contador = 0
 
 while b[1] != 27:
 
@@ -211,6 +259,10 @@ while b[1] != 27:
         # chama função para realizar os cruzamentos
         cruzamento()
 
+        # determino a taxa de mutação
+        if taxa_mutacao(10):
+            mutacao()
+
         # obtenho o melhor pai e substituo pelo pior filho
         filho_ruim = get_pior_filho()
         filhos_cruzamento[filho_ruim[0]] = individuos[melhor_pai[0]]
@@ -225,7 +277,10 @@ while b[1] != 27:
             print()
         print()
     '''
+    ++contador
     b = get_melhor_filho()
     if b[1] > melhor:
         melhor = b[1]
         print(melhor)
+
+print("contador = ", contador)
