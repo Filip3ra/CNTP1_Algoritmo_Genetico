@@ -1,31 +1,13 @@
 import numpy as np
 import random
 
-'''
-    r = (9 + (int(v[2]) * int(v[5])) - (int(v[23]) * int(v[14]))
-         + (int(v[24]) * int(v[4])) - (int(v[21]) * int(v[10]))
-         + (int(v[36]) * int(v[15])) - (int(v[11]) * int(v[26]))
-         + (int(v[16]) * int(v[17])) + (int(v[3]) * int(v[33]))
-         + (int(v[28]) * int(v[19])) + (int(v[12]) * int(v[34]))
-         - (int(v[31]) * int(v[32])) - (int(v[22]) * int(v[25]))
-         + (int(v[35]) * int(v[27])) - (int(v[29]) * int(v[7]))
-         + (int(v[8]) * int(v[13])) - (int(v[6]) * int(v[9]))
-         + (int(v[18]) * int(v[20])) - (int(v[1]) * int(v[30]))
-         + (int(v[23]) * int(v[4])) + (int(v[21]) * int(v[15]))
-         + (int(v[26]) * int(v[16])) + (int(v[31]) * int(v[12]))
-         + (int(v[25]) * int(v[19])) + (int(v[7]) * int(v[8]))
-         + (int(v[9]) * int(v[18])) + (int(v[1]) * int(v[33])))
-
-'''
 
 # VARIÁVEIS GLOBAIS
 ganhadores = []  # Usado no torneio binário. Lista para guardar os vencedores do torneio
-
-# Usado na conversão da matriz individuos int para valores em binário
-individuos_bin = np.zeros((30, 36), dtype=int)
+individuos_bin = np.zeros((30, 36), dtype=int)  # Usado na conversão da matriz individuos, int pra binário
 
 
-# Função que vai preencher a matriz de indivíduos com valores aleatórios
+# Função que vai preencher a matriz de indivíduos com valores aleatórios.
 def gera_individuos():
     # percorro cada elemento e adiciono um valor aleatório entre 0 e 15
     for x in range(len(individuos)):
@@ -33,7 +15,7 @@ def gera_individuos():
             individuos[x][y] = random.randint(0, 15)
 
 
-# converte a matriz de individuos para outra matriz com os valores binários
+# Função que converte a matriz de individuos para outra matriz com os valores binários.
 def converte_pra_bin():
     for x in range(len(individuos)):
         individuos_bin[x] = int_pra_bin(individuos[x])
@@ -41,7 +23,6 @@ def converte_pra_bin():
 
 # Função que converte inteiro para binário, onde cada bit é um caractere char.
 def int_pra_bin(vet_int):
-
     vet_char_bin = ''
     vet_int_bin = []
 
@@ -57,7 +38,7 @@ def int_pra_bin(vet_int):
     return vet_int_bin
 
 
-# Função fitness, que transforma os valores em binário para um valor inteiro
+# Função fitness, que transforma os valores em binário para um valor inteiro.
 def funcao_fitness(v):
     r = (9 + (int(v[1]) * int(v[4])) - (int(v[22]) * int(v[13]))
          + (int(v[23]) * int(v[3])) - (int(v[20]) * int(v[9]))
@@ -106,7 +87,7 @@ def torneio_binario():
                 ganhadores.append(p2)
 
 
-# Função que irá cruzar dois pais para gerar dois filhos
+# Função que irá cruzar dois pais para gerar dois filhos.
 def cruzamento():
     # rodo o cruzamento 15 vezes, pois cada par me gera 2 filhos
     for x in range(0, len(individuos_bin), 2):  # iteração começa em 0, vai até 30 e incrementa em 2
@@ -142,7 +123,7 @@ def cruzamento():
         filhos_cruzamento[x + 1] = filho_2
 
 
-# Função que vai realizar a mutação, ou seja, invertendo o valor de um bit
+# Função que vai realizar a mutação, ou seja, invertendo o valor de um bit.
 def mutacao():
     filho_mutado = random.randint(0, 29)
     posicao_bit = random.randint(0, 35)
@@ -155,8 +136,8 @@ def mutacao():
         filhos_cruzamento[filho_mutado][posicao_bit] = '1'
 
 
-# devo comprara as taxas de 0.03, 0.05, 0.1 e 0.4
-# que correspondem a 3%, 5%, 10% e 40%
+# Função que determina se haverá mutação em função das taxas de 0.03, 0.05, 0.1 e 0.4,
+# que correspondem a 3%, 5%, 10% e 40%.
 def taxa_mutacao(porcentagem):
     valor = random.randint(1, 100)
     mut = False
@@ -203,14 +184,11 @@ def get_melhor_pai():
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-'''
-int = 2147483647
-'''
 m = 0
 melhor = 0
 contador = 0
 
-while melhor != 27 and contador < 10000:
+while melhor != 27 and contador < 10:
 
     # matriz com 30 individuos com 9 elementos, preenchida com 0
     individuos = np.zeros((30, 9), dtype=int)
@@ -226,7 +204,7 @@ while melhor != 27 and contador < 10000:
         torneio_binario()
 
         # matriz que irá guardar todos os filhos dos cruzamentos
-        #[['' for i in range(30)] for j in range(36)]
+        # [['' for i in range(30)] for j in range(36)]
         filhos_cruzamento = np.zeros((30, 36), dtype=int)
 
         # chama função para realizar os cruzamentos e preencher a matriz criada acima, já em binário
@@ -244,14 +222,8 @@ while melhor != 27 and contador < 10000:
         # a população de filhos substitui a população de pais
         individuos_bin = filhos_cruzamento
 
-
-    #mpg = get_melhor_pai()
-    #print(funcao_fitness(individuos_bin[mpg[0]]))
-
-    contador += 1
-    m = get_melhor_pai()
-    if m[1] > melhor:
-        melhor = m[1]
-        print(melhor)
-
-print(contador)
+        contador += 1
+        m = get_melhor_pai()
+        if m[1] > melhor:
+            melhor = m[1]
+            print("- ", melhor)
