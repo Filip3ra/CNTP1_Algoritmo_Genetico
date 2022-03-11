@@ -1,7 +1,6 @@
 import numpy as np
 import random
 
-
 # VARIÁVEIS GLOBAIS
 ganhadores = []  # Usado no torneio binário. Lista para guardar os vencedores do torneio
 individuos_bin = np.zeros((30, 36), dtype=int)  # Usado na conversão da matriz individuos, int pra binário
@@ -95,8 +94,8 @@ def cruzamento():
         # gero dois pares de vencedores para serem cruzados
         v1 = v2 = 0
         while v1 == v2:
-            v1 = random.randint(0, 29)
-            v2 = random.randint(0, 29)
+            v1 = random.randint(0, len(individuos_bin) - 1)
+            v2 = random.randint(0, len(individuos_bin) - 1)
 
         pai_1 = ganhadores[v1]
         pai_2 = ganhadores[v2]
@@ -125,7 +124,7 @@ def cruzamento():
 
 # Função que vai realizar a mutação, ou seja, invertendo o valor de um bit.
 def mutacao():
-    filho_mutado = random.randint(0, 29)
+    filho_mutado = random.randint(0, len(individuos_bin) - 1)
     posicao_bit = random.randint(0, 35)
 
     bit = filhos_cruzamento[filho_mutado][posicao_bit]
@@ -181,6 +180,8 @@ def get_melhor_pai():
             melhor_pai[0] = x
             melhor_pai[1] = fit
     return melhor_pai
+
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 
