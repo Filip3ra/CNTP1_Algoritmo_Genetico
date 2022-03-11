@@ -86,6 +86,38 @@ def torneio_binario():
                 ganhadores.append(p2)
 
 
+def torneio_roleta():
+    # realizo o torneio 30 vezes para manter 30 indivíduos
+    for x in range(len(individuos)):
+
+        vet_fitness = []    # vetor que guarda o fitness de cada indivíduo
+        soma_fitness = 0    # guarda a soma total dos fitness, que representa 100% da roleta
+        fit_relativo = []   # guarda o valor fitness relativo
+
+        # calculo o fitness de cada individuo
+        for y in range(len(individuos)):
+            vet_fitness.append(funcao_fitness(individuos_bin[y]))
+            soma_fitness += vet_fitness[y]
+
+        for y in range(len(vet_fitness)):
+            fit_relativo.append(round((vet_fitness[y]*100)/soma_fitness))  # faço arredondamento pro teto ou chão
+
+        # A roleta representa uma sequência de 1 até 100,
+        # cada valor dentro de fit_relativo representa quantos
+        # números da sorte ele possui. Se o primeiro valor (fit_relativo[0])
+        # fosse 3, por exemplo, então ele tem os números 1, 2 e 3. Se o próximo
+        # valor (fit_relativo[1]) fosse 4, então ele tem os números 4, 5, 6 e 7.
+        # Dessa forma, se o 'n' for 6, quem é selecionado é o indivíduo
+        # com fit_relativo de valor 4.
+        n = random.randint(0, 100)
+        aux = 0
+        for y in range(len(fit_relativo)):
+            if aux < n <= (fit_relativo[y]+aux):
+                ganhadores.append(y)
+            else:
+                aux += fit_relativo[y]
+
+
 # Função que irá cruzar dois pais para gerar dois filhos.
 def cruzamento():
     # rodo o cruzamento 15 vezes, pois cada par me gera 2 filhos
@@ -202,7 +234,9 @@ while melhor != 27 and contador < 10:
 
     for i in range(40):
         # realizo o torneio binário e tenho um vetor com as posições dos vencedores la da matriz de individuos
-        torneio_binario()
+        #torneio_binario()
+
+        torneio_roleta()
 
         # matriz que irá guardar todos os filhos dos cruzamentos
         # [['' for i in range(30)] for j in range(36)]
