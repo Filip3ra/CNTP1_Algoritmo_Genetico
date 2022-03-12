@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 # VARIÁVEIS GLOBAIS
 ganhadores = []  # Usado no torneio binário. Lista para guardar os vencedores do torneio
@@ -90,9 +91,9 @@ def torneio_roleta():
     # realizo o torneio 30 vezes para manter 30 indivíduos
     for x in range(len(individuos)):
 
-        vet_fitness = []    # vetor que guarda o fitness de cada indivíduo
-        soma_fitness = 0    # guarda a soma total dos fitness, que representa 100% da roleta
-        fit_relativo = []   # guarda o valor fitness relativo
+        vet_fitness = []  # vetor que guarda o fitness de cada indivíduo
+        soma_fitness = 0  # guarda a soma total dos fitness, que representa 100% da roleta
+        fit_relativo = []  # guarda o valor fitness relativo
 
         # calculo o fitness de cada individuo
         for y in range(len(individuos)):
@@ -100,7 +101,7 @@ def torneio_roleta():
             soma_fitness += vet_fitness[y]
 
         for y in range(len(vet_fitness)):
-            fit_relativo.append(round((vet_fitness[y]*100)/soma_fitness))  # faço arredondamento pro teto ou chão
+            fit_relativo.append(round((vet_fitness[y] * 100) / soma_fitness))  # faço arredondamento pro teto ou chão
 
         # A roleta representa uma sequência de 1 até 100,
         # cada valor dentro de fit_relativo representa quantos
@@ -112,7 +113,7 @@ def torneio_roleta():
         n = random.randint(0, 100)
         aux = 0
         for y in range(len(fit_relativo)):
-            if aux < n <= (fit_relativo[y]+aux):
+            if aux < n <= (fit_relativo[y] + aux):
                 ganhadores.append(y)
             else:
                 aux += fit_relativo[y]
@@ -220,6 +221,8 @@ def get_melhor_pai():
 m = 0
 melhor = 0
 contador = 0
+data = []
+qtd_melhor = 0
 
 while melhor != 27 and contador < 10:
 
@@ -233,10 +236,9 @@ while melhor != 27 and contador < 10:
     converte_pra_bin()
 
     for i in range(40):
-        # realizo o torneio binário e tenho um vetor com as posições dos vencedores la da matriz de individuos
-        #torneio_binario()
-
-        torneio_roleta()
+        # realizo o torneio e tenho um vetor com as posições dos vencedores la da matriz de individuos
+        torneio_binario()
+        # torneio_roleta()
 
         # matriz que irá guardar todos os filhos dos cruzamentos
         # [['' for i in range(30)] for j in range(36)]
@@ -257,8 +259,22 @@ while melhor != 27 and contador < 10:
         # a população de filhos substitui a população de pais
         individuos_bin = filhos_cruzamento
 
-        contador += 1
         m = get_melhor_pai()
-        if m[1] > melhor:
+        if m[1] >= melhor:
             melhor = m[1]
-            print("- ", melhor)
+            print(i, " - ", melhor)
+    print("\nking - ", melhor)
+    contador += 1
+    data.append(melhor)
+
+fig = plt.figure(figsize=(8, 5))
+
+# Creating axes instance
+# ax = fig.add_axes([0, 0, 1, 1])
+
+# Creating plot
+# bp = ax.boxplot(data)
+
+plt.boxplot(data)
+# show plot
+plt.show()
