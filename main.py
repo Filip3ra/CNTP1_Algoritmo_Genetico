@@ -119,6 +119,14 @@ def torneio_roleta():
                 aux += fit_relativo[y]
 
 
+# Função que seleciona qualquer individuo da população de forma aleatória
+def selecao_uniforme():
+    # escolho dois individuos de forma aleatória, que não seja o mesmo
+    for x in range(len(individuos)):
+        p1 = random.randint(0, len(individuos) - 1)
+        ganhadores.append(p1)
+
+
 # Função que irá cruzar dois pais para gerar dois filhos.
 def cruzamento():
     # rodo o cruzamento 15 vezes, pois cada par me gera 2 filhos
@@ -237,8 +245,9 @@ while melhor != 27 and contador < 10:
 
     for i in range(40):
         # realizo o torneio e tenho um vetor com as posições dos vencedores la da matriz de individuos
-        torneio_binario()
+        #torneio_binario()
         # torneio_roleta()
+        selecao_uniforme()
 
         # matriz que irá guardar todos os filhos dos cruzamentos
         # [['' for i in range(30)] for j in range(36)]
