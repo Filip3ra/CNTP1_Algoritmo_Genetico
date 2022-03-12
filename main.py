@@ -243,10 +243,12 @@ while melhor != 27 and contador < 10:
     # converter os valores gerados na matriz individuos para binário
     converte_pra_bin()
 
+    print("----------------------")
+    print("Iteração - ", contador)
     for i in range(40):
         # realizo o torneio e tenho um vetor com as posições dos vencedores la da matriz de individuos
         #torneio_binario()
-        # torneio_roleta()
+        #torneio_roleta()
         selecao_uniforme()
 
         # matriz que irá guardar todos os filhos dos cruzamentos
@@ -257,7 +259,7 @@ while melhor != 27 and contador < 10:
         cruzamento()
 
         # determino a taxa de mutação
-        if taxa_mutacao(10):
+        if taxa_mutacao(40):
             mutacao()
 
         # obtenho o melhor pai e substituo pelo pior filho
@@ -271,18 +273,18 @@ while melhor != 27 and contador < 10:
         m = get_melhor_pai()
         if m[1] >= melhor:
             melhor = m[1]
-            print(i, " - ", melhor)
-    print("\nking - ", melhor)
     contador += 1
     data.append(melhor)
+    print("melhor -> ", melhor)
+
 
 fig = plt.figure(figsize=(8, 5))
 
 # Creating axes instance
-# ax = fig.add_axes([0, 0, 1, 1])
+#ax = fig.add_axes([0, 0, 1, 1])
 
 # Creating plot
-# bp = ax.boxplot(data)
+#bp = ax.boxplot(data)
 
 plt.boxplot(data)
 # show plot
