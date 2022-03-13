@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # VARIÁVEIS GLOBAIS
 ganhadores = []  # Usado no torneio binário. Lista para guardar os vencedores do torneio
-individuos_bin = np.zeros((30, 36), dtype=int)  # Usado na conversão da matriz individuos, int pra binário
+individuos_bin = np.zeros((100, 36), dtype=int)  # Usado na conversão da matriz individuos, int pra binário
 
 
 # Função que vai preencher a matriz de indivíduos com valores aleatórios.
@@ -225,17 +225,16 @@ def get_melhor_pai():
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-
+# Variáveis usadas na coleta de dados sobre o melhor fitness
 m = 0
 melhor = 0
 contador = 0
 data = []
-qtd_melhor = 0
 
 while melhor != 27 and contador < 10:
 
     # matriz com 30 individuos com 9 elementos, preenchida com 0
-    individuos = np.zeros((30, 9), dtype=int)
+    individuos = np.zeros((100, 9), dtype=int)
 
     # gera um valor aleatório para cada indivíduo
     gera_individuos()
@@ -253,7 +252,7 @@ while melhor != 27 and contador < 10:
 
         # matriz que irá guardar todos os filhos dos cruzamentos
         # [['' for i in range(30)] for j in range(36)]
-        filhos_cruzamento = np.zeros((30, 36), dtype=int)
+        filhos_cruzamento = np.zeros((100, 36), dtype=int)
 
         # chama função para realizar os cruzamentos e preencher a matriz criada acima, já em binário
         cruzamento()
@@ -277,20 +276,7 @@ while melhor != 27 and contador < 10:
     data.append(melhor)
     print("melhor -> ", melhor)
 
-
+# Gera gráfico com os dados dos melhores fitness
 fig = plt.figure(figsize=(8, 5))
-
-# Creating axes instance
-#ax = fig.add_axes([0, 0, 1, 1])
-
-# Creating plot
-#bp = ax.boxplot(data)
-
 plt.boxplot(data)
-# show plot
 plt.show()
-
-
-
-
-
