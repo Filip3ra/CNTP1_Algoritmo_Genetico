@@ -1,0 +1,8 @@
+> não devo gerar inteiros e converter para 
+binário, devo gerar binários.
+
+Usando a primeira abordagem, a aleatoriedade
+se divide em 16 valores possíveis. Gerando
+apenas binário na segunda abordagem eu
+tenho 50% de chance pra 1 ou 0.
+
