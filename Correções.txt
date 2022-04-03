@@ -6,3 +6,5 @@ se divide em 16 valores possíveis. Gerando
 apenas binário na segunda abordagem eu
 tenho 50% de chance pra 1 ou 0.
 
+
+
